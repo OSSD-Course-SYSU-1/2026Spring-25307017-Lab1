@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 健康生活应用
 
 ## 项目简介
@@ -140,3 +141,6 @@
 2. HarmonyOS系统：HarmonyOS 6.0.2 Release及以上。
 3. DevEco Studio版本：DevEco Studio 6.0.2 Release及以上。
 4. HarmonyOS SDK版本：HarmonyOS 6.0.2 Release SDK及以上。
+=======
+111
+>>>>>>> f3e5230ec4928482949c53f1ccc19b580fd97bb0
