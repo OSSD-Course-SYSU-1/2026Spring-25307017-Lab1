@@ -22,14 +22,17 @@ export class DayTaskInfo {
   targetValue: string;
   finValue: string;
   isDone: boolean;
+  finishTime: string;
 
-  constructor(id: number, date: string, taskId: number, targetValue: string, finValue: string, isDone: boolean) {
+  constructor(id: number, date: string, taskId: number, targetValue: string, finValue: string, isDone: boolean,
+    finishTime: string = '') {
     this.id = id;
     this.date = date;
     this.taskId = taskId;
     this.targetValue = targetValue;
     this.finValue = finValue;
     this.isDone = isDone;
+    this.finishTime = finishTime;
   }
 
   toString(): string {
@@ -39,7 +42,8 @@ export class DayTaskInfo {
       `taskId: ${this.taskId}, ` +
       `targetValue: ${this.targetValue}, ` +
       `finValue: ${this.finValue}, ` +
-      `isDone: ${this.isDone}` +
+      `isDone: ${this.isDone}, ` +
+      `finishTime: ${this.finishTime}` +
       `]`;
   }
 }

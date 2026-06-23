@@ -113,6 +113,14 @@
       "value": "About"
     },
     {
+      "name": "history_record",
+      "value": "History"
+    },
+    {
+      "name": "no_history",
+      "value": "No history records"
+    },
+    {
       "name": "mine_achievement",
       "value": "achievement"
     },
@@ -187,6 +195,10 @@
     {
       "name": "user_level",
       "value": "LV.7"
+    },
+    {
+      "name": "mine_signature",
+      "value": "Signature"
     },
     {
       "name": "user_signature",

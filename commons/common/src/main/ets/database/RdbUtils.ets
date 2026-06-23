@@ -111,6 +111,12 @@ export class RdbUtils {
     } catch (_err) {
       // column already exists, ignore
     }
+    try {
+      await RdbUtils.executeSql('ALTER TABLE dayTaskInfo ADD COLUMN finishTime TEXT');
+      hilog.info(0x0000, TAG, 'Migration: added finishTime column to dayTaskInfo');
+    } catch (_err) {
+      // column already exists, ignore
+    }
   }
 
   static async closeRdb(): Promise<void> {

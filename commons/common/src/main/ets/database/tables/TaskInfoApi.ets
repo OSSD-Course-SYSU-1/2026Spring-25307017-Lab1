@@ -430,7 +430,12 @@ class TaskInfoApi implements TableApi<TaskInfo> {
     }
 
     let key = await DayTaskInfoApi.queryKeyByDateAndTaskId(date, taskId);
-    result = await DayTaskInfoApi.update(key, taskInfo.convert2DayTask(date));
+    let dayTask = taskInfo.convert2DayTask(date);
+    if (taskInfo.isDone) {
+      const now = new Date();
+      dayTask.finishTime = `${("0" + now.getHours()).slice(-2)}:${("0" + now.getMinutes()).slice(-2)}`;
+    }
+    result = await DayTaskInfoApi.update(key, dayTask);
     if (!result) {
       return result;
     }

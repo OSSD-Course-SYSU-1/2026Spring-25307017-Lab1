@@ -62,7 +62,8 @@ export class RdbConstants {
     new ColumnInfo('taskId', 'integer', 2, false, false, false),
     new ColumnInfo('targetValue', 'text', -1, false, false, false),
     new ColumnInfo('finValue', 'text', -1, false, false, false),
-    new ColumnInfo('isDone', 'boolean', -1, false, false, false)
+    new ColumnInfo('isDone', 'boolean', -1, false, false, false),
+    new ColumnInfo('finishTime', 'text', -1, true, false, false)
   ];
   // column information for database tables of day info
   static readonly COLUMNS_OF_FORM: ColumnInfo[] = [

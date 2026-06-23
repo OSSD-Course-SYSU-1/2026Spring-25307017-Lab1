@@ -163,6 +163,9 @@ class DayTaskInfoApi implements TableApi<DayTaskInfo> {
         case 'isDone':
           valueBucket[name] = data.isDone;
           break;
+        case 'finishTime':
+          valueBucket[name] = data.finishTime;
+          break;
         default:
           break;
       }
@@ -178,10 +181,12 @@ class DayTaskInfoApi implements TableApi<DayTaskInfo> {
       const targetValue = resultSet.getValue(resultSet.getColumnIndex('targetValue')) as string;
       const finValue = resultSet.getValue(resultSet.getColumnIndex('finValue')) as string;
       const isDone = resultSet.getValue(resultSet.getColumnIndex('isDone')) ? true : false;
-      return new DayTaskInfo(id, date, taskId, targetValue, finValue, isDone);
+      const finishTimeIndex = resultSet.getColumnIndex('finishTime');
+      const finishTime = (finishTimeIndex >= 0 ? resultSet.getValue(finishTimeIndex) : undefined) as string || '';
+      return new DayTaskInfo(id, date, taskId, targetValue, finValue, isDone, finishTime);
     } catch (error) {
       hilog.error(0x0000, TAG, `an error occurred: ${error}`);
-      return new DayTaskInfo(0, '', 0, '', '', false);
+      return new DayTaskInfo(0, '', 0, '', '', false, '');
     }
   }
 

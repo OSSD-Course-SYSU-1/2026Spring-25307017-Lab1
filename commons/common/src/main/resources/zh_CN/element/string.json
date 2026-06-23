@@ -113,6 +113,14 @@
       "value": "关于"
     },
     {
+      "name": "history_record",
+      "value": "历史记录"
+    },
+    {
+      "name": "no_history",
+      "value": "暂无历史记录"
+    },
+    {
       "name": "mine_achievement",
       "value": "成就"
     },
@@ -187,6 +195,10 @@
     {
       "name": "user_level",
       "value": "LV.7"
+    },
+    {
+      "name": "mine_signature",
+      "value": "个性签名"
     },
     {
       "name": "user_signature",

@@ -119,6 +119,9 @@ export class CommonConstants {
   static readonly CURRENT_DAY_STATUS: string = 'currentDayStatus';
   static readonly DELETED_TASK_IDS: string = 'deletedTaskIds';
   static readonly HOME_BG_URI: string = 'homeBgUri';
+  static readonly AVATAR_URI: string = 'avatarUri';
+  static readonly USER_DISPLAY_NAME: string = 'userDisplayName';
+  static readonly USER_SIGNATURE: string = 'userSignature';
   // menu info
   static readonly DEFAULT_MENU_INFO: Resource[] = [
     $r('app.string.mine_personal_data'),

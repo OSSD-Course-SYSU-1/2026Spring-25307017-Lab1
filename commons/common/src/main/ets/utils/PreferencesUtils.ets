@@ -109,6 +109,33 @@ export class PreferencesUtils {
     await PreferencesUtils.putPreference(Const.HOME_BG_URI, uri);
   }
 
+  static async getAvatarUri(): Promise<string> {
+    const value = await PreferencesUtils.getPreference(Const.AVATAR_URI);
+    return (value && value !== 'default') ? value : '';
+  }
+
+  static async setAvatarUri(uri: string): Promise<void> {
+    await PreferencesUtils.putPreference(Const.AVATAR_URI, uri);
+  }
+
+  static async getUserDisplayName(): Promise<string> {
+    const value = await PreferencesUtils.getPreference(Const.USER_DISPLAY_NAME);
+    return (value && value !== 'default') ? value : '';
+  }
+
+  static async setUserDisplayName(name: string): Promise<void> {
+    await PreferencesUtils.putPreference(Const.USER_DISPLAY_NAME, name);
+  }
+
+  static async getUserSignature(): Promise<string> {
+    const value = await PreferencesUtils.getPreference(Const.USER_SIGNATURE);
+    return (value && value !== 'default') ? value : '';
+  }
+
+  static async setUserSignature(signature: string): Promise<void> {
+    await PreferencesUtils.putPreference(Const.USER_SIGNATURE, signature);
+  }
+
   static async getPreference(key: string): Promise<string> {
     let value: string = ''
     if (!PreferencesUtils.storePreferences) {
