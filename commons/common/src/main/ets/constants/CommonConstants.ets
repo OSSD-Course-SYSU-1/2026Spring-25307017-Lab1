@@ -103,19 +103,10 @@ export class CommonConstants {
   // task info
   static readonly TASK_NUM = 6;
   static readonly PICKER_RANGE_DRINK: string[] = [
-    '0.5',
-    '1',
-    '1.5',
-    '2',
-    '2.5',
-    '3',
+    '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'
   ];
   static readonly PICKER_RANGE_APPLE: string[] = [
-    '1',
-    '2',
-    '3',
-    '4',
-    '5'
+    '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'
   ];
   // achievement info
   static readonly ACHIEVEMENT_STORE: string = 'achievementStore';

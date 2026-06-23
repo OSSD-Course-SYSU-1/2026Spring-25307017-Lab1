@@ -45,9 +45,9 @@ export function editTaskBuilder(_name: string, param: TaskInfo) {
 }
 
 @Extend(Text)
-function targetValueStyle(isOpen: boolean, pickerType: PickerType) {
+function targetValueStyle(pickerType: PickerType) {
   .fontSize($r('app.float.default_16'))
-  .fontColor((isOpen && pickerType !== PickerType.NONE) ? $r('sys.color.font_primary') : $r('sys.color.font_tertiary'))
+  .fontColor(pickerType !== PickerType.NONE ? $r('sys.color.font_primary') : $r('sys.color.font_tertiary'))
   .padding({
     right: $r('app.float.default_6')
   })
@@ -68,58 +68,32 @@ export struct EditTaskComponent {
 
   async finishTaskEdit() {
     this.taskInfo.customName = this.customTaskName.trim();
-    if (this.originalInfo.isTaskEqual(this.taskInfo)) {
-      this.pageStack.clear(true);
-      return;
+    this.taskInfo.isOpen = true;
+    const wasOpen = this.originalInfo.isOpen;
+
+    // Always open task (idempotent if already open)
+    await TaskInfoApi.openTask(this.homeStore.currentDate, this.taskInfo.taskId);
+    // Update task fields
+    await TaskInfoApi.update(this.taskInfo.taskId, this.taskInfo);
+    // Sync DayTaskInfo
+    const key = await DayTaskInfoApi.queryKeyByDateAndTaskId(this.homeStore.currentDate, this.taskInfo.taskId);
+    if (key !== -1) {
+      await DayTaskInfoApi.update(key, this.taskInfo.convert2DayTask(this.homeStore.currentDate));
     }
-    const statusUnchanged =
-      (this.originalInfo.isOpen && this.taskInfo.isOpen) || (!this.originalInfo.isOpen && !this.taskInfo.isOpen);
-    if (statusUnchanged) {
-      // the task status has not changed, and only the other information of the task needs to be updated.
-      await TaskInfoApi.update(this.taskInfo.taskId, this.taskInfo);
-      if (this.originalInfo.isOpen) {
-        // the current task is open, need to synchronize the update day task information.
-        await DayTaskInfoApi.queryKeyByDateAndTaskId(this.homeStore.currentDate, this.taskInfo.taskId)
-          .then(async (key: number) => {
-            await DayTaskInfoApi.update(key, this.taskInfo.convert2DayTask(this.homeStore.currentDate));
-          })
-        if (this.taskBaseInfo.unit === '') {
-          // update agent alerts
-          AgentUtils.updateAgent(this.taskInfo, this.taskBaseInfo, this.getUIContext());
-          hilog.info(0x0000, TAG, `update reminderId successed, reminderId is ${this.taskInfo.reminderId}`);
-        }
-      }
-    } else {
-      // the task status has changed, need to update the task information before modifying the task status.
-      this.taskInfo.isOpen = this.originalInfo.isOpen;
-      if (!this.originalInfo.isTaskEqual(this.taskInfo)) {
-        await TaskInfoApi.update(this.taskInfo.taskId, this.taskInfo);
-      }
-      if (!this.taskInfo.isOpen) {
-        await TaskInfoApi.openTask(this.homeStore.currentDate, this.taskInfo.taskId);
-        if (this.taskBaseInfo.unit === '') {
-          let oldTaskInfo = await TaskInfoApi.queryByKey(this.taskInfo.taskId);
-          if (oldTaskInfo) {
-            let isRequestSuccess = await RequestAuthorization.requestNotification(this.getUIContext());
-            if (isRequestSuccess) {
-              let reminderId = await AgentUtils.creatAgent(this.taskInfo, this.taskBaseInfo, this.getUIContext());
-              // update reminderId
-              oldTaskInfo.reminderId = reminderId;
-              await TaskInfoApi.update(oldTaskInfo.taskId, oldTaskInfo);
-              hilog.info(0x0000, TAG, `create reminderId successed, reminderId is ${reminderId}`);
-            }
+    // Handle reminders for time-based tasks
+    if (this.taskBaseInfo.unit === '') {
+      if (!wasOpen) {
+        const taskInfo = await TaskInfoApi.queryByKey(this.taskInfo.taskId);
+        if (taskInfo) {
+          const isRequestSuccess = await RequestAuthorization.requestNotification(this.getUIContext());
+          if (isRequestSuccess) {
+            const reminderId = await AgentUtils.creatAgent(this.taskInfo, this.taskBaseInfo, this.getUIContext());
+            taskInfo.reminderId = reminderId;
+            await TaskInfoApi.update(taskInfo.taskId, taskInfo);
           }
         }
       } else {
-        await TaskInfoApi.closeTask(this.homeStore.currentDate, this.taskInfo.taskId);
-        // Check the reminderId, if it exists, the proxy reminder needs to be turned off.
-        if (this.taskBaseInfo.unit === '') {
-          let taskInfo = await TaskInfoApi.queryByKey(this.taskInfo.taskId);
-          if (taskInfo && taskInfo.reminderId !== -1) {
-            AgentUtils.deleteAgent(taskInfo.reminderId);
-            hilog.info(0x0000, TAG, `delete reminderId successed, reminderId is ${taskInfo.reminderId}`);
-          }
-        }
+        AgentUtils.updateAgent(this.taskInfo, this.taskBaseInfo, this.getUIContext());
       }
     }
     await updateTaskList(this.homeStore);
@@ -190,31 +164,6 @@ export struct EditTaskComponent {
         })
 
         Row() {
-          Text(this.customTaskName || this.taskBaseInfo.name)
-            .fontWeight(FontWeight.Medium)
-            .fontSize($r('app.float.default_18'))
-
-          Toggle({
-            type: ToggleType.Switch,
-            isOn: this.taskInfo.isOpen
-          })
-            .width($r('app.float.default_36'))
-            .height($r('app.float.default_20'))
-            .onChange((isOn) => {
-              this.taskInfo.isOpen = isOn;
-            })
-        }
-        .width(Const.THOUSANDTH_940)
-        .justifyContent(FlexAlign.SpaceBetween)
-        .backgroundColor($r('sys.color.background_primary'))
-        .height($r('app.float.default_56'))
-        .borderRadius($r('app.float.default_16'))
-        .padding({
-          left: $r('app.float.default_12'),
-          right: $r('app.float.default_12')
-        })
-
-        Row() {
           Text($r('app.string.target_setting'))
             .fontWeight(FontWeight.Medium)
             .fontSize($r('app.float.default_18'))
@@ -222,14 +171,14 @@ export struct EditTaskComponent {
           Blank()
 
           Text(this.taskInfo.targetValue)
-            .targetValueStyle(this.taskInfo.isOpen, this.taskBaseInfo.pickerType)
+            .targetValueStyle(this.taskBaseInfo.pickerType)
 
           if (this.taskBaseInfo.unit !== '') {
             Text(this.taskBaseInfo.unit)
-              .targetValueStyle(this.taskInfo.isOpen, this.taskBaseInfo.pickerType)
+              .targetValueStyle(this.taskBaseInfo.pickerType)
 
             Text($r('app.string.unit_pre_day'))
-              .targetValueStyle(this.taskInfo.isOpen, this.taskBaseInfo.pickerType)
+              .targetValueStyle(this.taskBaseInfo.pickerType)
           }
 
           SymbolGlyph($r('sys.symbol.chevron_right'))
@@ -247,7 +196,7 @@ export struct EditTaskComponent {
         })
         .enabled(true)
         .onClick(() => {
-          if (this.taskInfo.isOpen && this.taskBaseInfo.pickerType !== PickerType.NONE) {
+          if (this.taskBaseInfo.pickerType !== PickerType.NONE) {
             let params = new TargetSettingDialogParams(this.taskInfo, this.taskBaseInfo);
             openTargetSettingCustomDialog(this.getUIContext(), params);
           }
@@ -278,7 +227,7 @@ export struct EditTaskComponent {
           .buttonStyle(ButtonStyleMode.NORMAL)
           .width(Const.THOUSANDTH_440)
           .height($r('app.float.default_40'))
-          .backgroundColor($r('sys.color.button_background_color_transparent'))
+          .backgroundColor('#3377FF')
           .borderRadius($r('app.float.default_20'))
           .onClick(async () => {
             await this.finishTaskEdit();
