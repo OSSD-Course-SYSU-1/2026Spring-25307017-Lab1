@@ -199,22 +199,6 @@
     {
       "name": "unit_pre_day",
       "value": "/ day"
-    },
-    {
-      "name": "custom_task",
-      "value": "Custom Task"
-    },
-    {
-      "name": "input_task_name",
-      "value": "Please enter task name"
-    },
-    {
-      "name": "task_name_empty",
-      "value": "Task name cannot be empty"
-    },
-    {
-      "name": "add_custom_task",
-      "value": "Add Custom Task"
     }
   ]
 }

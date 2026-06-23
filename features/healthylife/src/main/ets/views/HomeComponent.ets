@@ -22,7 +22,7 @@ import { AchievementStore } from '../viewmodel/AchievementStore';
 import { HomeStore, initCurrentDateInfo } from '../viewmodel/HomeStore';
 
 @Builder
-export function homeBuilder(_name: string, _param: ESObject) {
+export function homeBuilder() {
   HomeComponent();
 }
 

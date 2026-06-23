@@ -199,22 +199,6 @@
     {
       "name": "unit_pre_day",
       "value": "/ 天"
-    },
-    {
-      "name": "custom_task",
-      "value": "自定义任务"
-    },
-    {
-      "name": "input_task_name",
-      "value": "请输入任务名称"
-    },
-    {
-      "name": "task_name_empty",
-      "value": "任务名称不能为空"
-    },
-    {
-      "name": "add_custom_task",
-      "value": "添加自定义任务"
     }
   ]
 }

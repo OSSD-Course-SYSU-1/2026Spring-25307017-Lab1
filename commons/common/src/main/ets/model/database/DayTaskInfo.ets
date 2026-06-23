@@ -22,16 +22,14 @@ export class DayTaskInfo {
   targetValue: string;
   finValue: string;
   isDone: boolean;
-  customName?: string;
 
-  constructor(id: number, date: string, taskId: number, targetValue: string, finValue: string, isDone: boolean, customName?: string) {
+  constructor(id: number, date: string, taskId: number, targetValue: string, finValue: string, isDone: boolean) {
     this.id = id;
     this.date = date;
     this.taskId = taskId;
     this.targetValue = targetValue;
     this.finValue = finValue;
     this.isDone = isDone;
-    this.customName = customName;
   }
 
   toString(): string {

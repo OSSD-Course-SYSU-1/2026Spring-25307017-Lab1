@@ -66,37 +66,19 @@ export struct TaskListComponent {
   @Builder
   taskCardBuilder(item: DayTaskInfo, _index: number) {
     Row() {
-      if (item.customName && item.taskId >= taskBaseInfoList.length) {
-        // 自定义任务
-        Image($r('app.media.ic_home_add'))
-          .width($r('app.float.default_36'))
-          .height($r('app.float.default_36'))
-          .objectFit(ImageFit.Contain)
-          .margin({
-            right: $r('app.float.default_8')
-          })
+      Image(taskBaseInfoList[item.taskId].icon)
+        .width($r('app.float.default_36'))
+        .height($r('app.float.default_36'))
+        .objectFit(ImageFit.Contain)
+        .margin({
+          right: $r('app.float.default_8')
+        })
 
-        Text(item.customName)
-          .fontFamily(Const.HARMONY_HEI_TI_MEDIUM)
-          .fontWeight(FontWeight.Regular)
-          .fontColor($r(`sys.color.font_primary`))
-          .fontSize($r('app.float.default_16'))
-      } else {
-        // 预设任务
-        Image(taskBaseInfoList[item.taskId].icon)
-          .width($r('app.float.default_36'))
-          .height($r('app.float.default_36'))
-          .objectFit(ImageFit.Contain)
-          .margin({
-            right: $r('app.float.default_8')
-          })
-
-        Text(taskBaseInfoList[item.taskId].name)
-          .fontFamily(Const.HARMONY_HEI_TI_MEDIUM)
-          .fontWeight(FontWeight.Regular)
-          .fontColor($r(`sys.color.font_primary`))
-          .fontSize($r('app.float.default_16'))
-      }
+      Text(taskBaseInfoList[item.taskId].name)
+        .fontFamily(Const.HARMONY_HEI_TI_MEDIUM)
+        .fontWeight(FontWeight.Regular)
+        .fontColor($r(`sys.color.font_primary`))
+        .fontSize($r('app.float.default_16'))
 
       Blank()
 
@@ -137,10 +119,7 @@ export struct TaskListComponent {
 
         this.taskValueBuilder(` / ${item.targetValue} `, $r(`sys.color.font_primary`))
 
-        // 自定义任务不显示单位
-        if (item.taskId < taskBaseInfoList.length) {
-          this.taskValueBuilder(taskBaseInfoList[item.taskId].unit, $r(`sys.color.font_primary`))
-        }
+        this.taskValueBuilder(taskBaseInfoList[item.taskId].unit, $r(`sys.color.font_primary`))
       }
     }
   }

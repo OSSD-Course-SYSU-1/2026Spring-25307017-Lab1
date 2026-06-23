@@ -27,10 +27,9 @@ export class TaskBaseInfo {
   limit: string;
   pickerType: PickerType;
   pickerRange: string[];
-  customName?: string; // 自定义任务名称
 
   constructor(id: number, name: Resource, icon: Resource, dialog: Resource, unit: ResourceStr, step: number,
-    range: string, pickerType: PickerType, pickerRange: string[], customName?: string) {
+    range: string, pickerType: PickerType, pickerRange: string[]) {
     this.id = id;
     this.name = name;
     this.icon = icon;
@@ -40,7 +39,6 @@ export class TaskBaseInfo {
     this.limit = range;
     this.pickerType = pickerType;
     this.pickerRange = pickerRange;
-    this.customName = customName;
   }
 }
 

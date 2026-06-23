@@ -178,9 +178,6 @@ class TaskInfoApi implements TableApi<TaskInfo> {
         case 'reminderId':
           valueBucket[name] = data.reminderId;
           break;
-        case 'customName':
-          valueBucket[name] = data.customName ?? '';
-          break;
         default:
           break;
       }
@@ -200,9 +197,8 @@ class TaskInfoApi implements TableApi<TaskInfo> {
       const alertEndTime = resultSet.getValue(resultSet.getColumnIndex('alertEndTime')) as string;
       const alertFrequency = resultSet.getValue(resultSet.getColumnIndex('alertFrequency')) as string;
       const reminderId = resultSet.getValue(resultSet.getColumnIndex('reminderId')) as number;
-      const customName = resultSet.getValue(resultSet.getColumnIndex('customName')) as string;
       return new TaskInfo(taskId, isOpen, targetValue, finValue, isDone, isAlert, alertStartTime, alertEndTime,
-        alertFrequency, reminderId, customName);
+        alertFrequency, reminderId);
     } catch (error) {
       hilog.error(0x0000, TAG, `an error occurred: ${error}`);
       return new TaskInfo(-1, false, '', '', false, false, '', '', '', -1);

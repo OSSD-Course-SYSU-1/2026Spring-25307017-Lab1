@@ -4,7 +4,7 @@ import { openAchievementCustomDialog } from './dialog/AchievementDialog';
 import { AchievementItem, AchievementList } from '../model/AchievementModel';
 
 @Builder
-export function achBuilder(_name: string, _param: ESObject) {
+export function achBuilder() {
   AchievementComponent();
 }
 
