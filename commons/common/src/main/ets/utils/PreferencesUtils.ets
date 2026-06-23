@@ -84,6 +84,22 @@ export class PreferencesUtils {
    * @param { string } key Indicates the key of the preferences.
    * @returns { Promise<string> } The value matching the specified key if it is found;
    */
+  static async getDeletedTaskIds(): Promise<number[]> {
+    const value = await PreferencesUtils.getPreference(Const.DELETED_TASK_IDS);
+    if (!value || value === 'default') {
+      return [];
+    }
+    return value.split(',').map((s: string) => Number(s)).filter((n: number) => !isNaN(n));
+  }
+
+  static async addDeletedTaskId(taskId: number): Promise<void> {
+    const ids = await PreferencesUtils.getDeletedTaskIds();
+    if (!ids.includes(taskId)) {
+      ids.push(taskId);
+      await PreferencesUtils.putPreference(Const.DELETED_TASK_IDS, ids.join(','));
+    }
+  }
+
   static async getPreference(key: string): Promise<string> {
     let value: string = ''
     if (!PreferencesUtils.storePreferences) {

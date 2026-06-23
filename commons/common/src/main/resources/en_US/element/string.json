@@ -137,6 +137,10 @@
       "value": "Target setting"
     },
     {
+      "name": "delete_task",
+      "value": "Delete"
+    },
+    {
       "name": "complete",
       "value": "Complete"
     },

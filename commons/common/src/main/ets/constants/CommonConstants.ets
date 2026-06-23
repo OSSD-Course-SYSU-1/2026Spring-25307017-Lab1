@@ -122,6 +122,7 @@ export class CommonConstants {
   static readonly MAX_CONSECUTIVE_DAYS: string = 'maxConsecutiveDays';
   static readonly CURRENT_CONSECUTIVE_DAYS: string = 'currentConsecutiveDays';
   static readonly CURRENT_DAY_STATUS: string = 'currentDayStatus';
+  static readonly DELETED_TASK_IDS: string = 'deletedTaskIds';
   // menu info
   static readonly DEFAULT_MENU_INFO: Resource[] = [
     $r('app.string.mine_personal_data'),

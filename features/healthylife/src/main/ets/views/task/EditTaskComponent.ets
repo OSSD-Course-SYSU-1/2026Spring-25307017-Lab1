@@ -19,6 +19,7 @@ import { HomeStore, updateTaskList } from '../../viewmodel/HomeStore';
 import TaskInfoApi from 'common/src/main/ets/database/tables/TaskInfoApi';
 import { openTargetSettingCustomDialog } from '../dialog/TargetSettingDialog';
 import DayTaskInfoApi from 'common/src/main/ets/database/tables/DayTaskInfoApi';
+import DayInfoApi from 'common/src/main/ets/database/tables/DayInfoApi';
 import { TargetSettingDialogParams } from '../../viewmodel/dialog/TargetSettingDialogParams';
 import {
   AgentUtils,
@@ -30,6 +31,7 @@ import {
   TaskInfo
 } from 'common';
 import { hilog } from '@kit.PerformanceAnalysisKit';
+import { PreferencesUtils } from 'common/src/main/ets/utils/PreferencesUtils';
 
 const TAG: string = 'EditTaskComponent'
 
@@ -120,6 +122,30 @@ export struct EditTaskComponent {
         }
       }
     }
+    await updateTaskList(this.homeStore);
+    this.pageStack.clear(true);
+  }
+
+  async deleteTask() {
+    // 1. close task if it's currently open (cancel reminders, cleanup day info)
+    if (this.taskInfo.isOpen) {
+      await TaskInfoApi.closeTask(this.homeStore.currentDate, this.taskInfo.taskId);
+      if (this.taskBaseInfo.unit === '') {
+        const taskInfo = await TaskInfoApi.queryByKey(this.taskInfo.taskId);
+        if (taskInfo && taskInfo.reminderId !== -1) {
+          AgentUtils.deleteAgent(taskInfo.reminderId);
+        }
+      }
+    }
+    // 2. remove any remaining DayTaskInfo (e.g., task was already done today)
+    const dayTaskKey = await DayTaskInfoApi.queryKeyByDateAndTaskId(this.homeStore.currentDate, this.taskInfo.taskId);
+    if (dayTaskKey !== -1) {
+      await DayTaskInfoApi.delete(dayTaskKey);
+      await DayInfoApi.updateDayByTaskStatus(this.homeStore.currentDate);
+    }
+    // 3. mark as deleted in preferences
+    await PreferencesUtils.addDeletedTaskId(this.taskInfo.taskId);
+    // 4. refresh home and go back
     await updateTaskList(this.homeStore);
     this.pageStack.clear(true);
   }
@@ -227,20 +253,42 @@ export struct EditTaskComponent {
           }
         })
 
-        Button() {
-          Text($r('app.string.complete'))
-            .fontSize($r('app.float.default_18'))
+        Row() {
+          Button() {
+            Text($r('app.string.delete_task'))
+              .fontSize($r('app.float.default_16'))
+              .fontColor($r('sys.color.font_on_primary'))
+          }
+          .buttonStyle(ButtonStyleMode.NORMAL)
+          .width(Const.THOUSANDTH_440)
+          .height($r('app.float.default_40'))
+          .backgroundColor('#CC3333')
+          .borderRadius($r('app.float.default_20'))
+          .onClick(async () => {
+            await this.deleteTask();
+          })
+
+          Blank()
+
+          Button() {
+            Text($r('app.string.complete'))
+              .fontSize($r('app.float.default_16'))
+              .fontColor($r('sys.color.font_on_primary'))
+          }
+          .buttonStyle(ButtonStyleMode.NORMAL)
+          .width(Const.THOUSANDTH_440)
+          .height($r('app.float.default_40'))
+          .backgroundColor($r('sys.color.button_background_color_transparent'))
+          .borderRadius($r('app.float.default_20'))
+          .onClick(async () => {
+            await this.finishTaskEdit();
+          })
         }
-        .buttonStyle(ButtonStyleMode.NORMAL)
         .width(Const.THOUSANDTH_940)
-        .height($r('app.float.default_40'))
-        .backgroundColor($r('sys.color.button_background_color_transparent'))
+        .justifyContent(FlexAlign.SpaceBetween)
         .position({
           x: Const.THOUSANDTH_30,
           y: Const.THOUSANDTH_880
-        })
-        .onClick(async () => {
-          await this.finishTaskEdit();
         })
       }
       .width(Const.THOUSANDTH_1000)

@@ -137,6 +137,10 @@
       "value": "目标设置"
     },
     {
+      "name": "delete_task",
+      "value": "删除"
+    },
+    {
       "name": "complete",
       "value": "完成"
     },

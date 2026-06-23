@@ -16,6 +16,7 @@
  */
 
 import TaskInfoApi from 'common/src/main/ets/database/tables/TaskInfoApi';
+import { PreferencesUtils } from 'common/src/main/ets/utils/PreferencesUtils';
 import { CommonConstants as Const, taskBaseInfoList, TaskInfo } from 'common';
 
 @Builder
@@ -30,7 +31,9 @@ export struct AddTaskComponent {
   @State flag: boolean = false;
 
   async aboutToAppear(): Promise<void> {
-    this.taskList = await TaskInfoApi.queryAllTaskInfo();
+    const allTasks = await TaskInfoApi.queryAllTaskInfo();
+    const deletedIds = await PreferencesUtils.getDeletedTaskIds();
+    this.taskList = allTasks.filter((t: TaskInfo) => !deletedIds.includes(t.taskId));
     this.flag = true;
   }
 
