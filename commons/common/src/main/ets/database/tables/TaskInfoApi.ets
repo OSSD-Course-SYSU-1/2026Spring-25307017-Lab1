@@ -27,7 +27,6 @@ import { RdbConstants } from '../../constants/RdbConstants';
 import { taskBaseInfoList } from '../../model/TaskBaseModel';
 import { CommonConstants as Const } from '../../constants/CommonConstants';
 import { defaultTaskInfoList, TaskInfo } from '../../model/database/TaskInfo';
-import { PreferencesUtils } from '../../utils/PreferencesUtils';
 
 // hilog tag
 const TAG: string = 'TaskInfoApi';
@@ -218,14 +217,16 @@ class TaskInfoApi implements TableApi<TaskInfo> {
    */
   async checkDefaultTask(): Promise<boolean> {
     let taskList: TaskInfo[] = await this.query('SELECT * FROM taskInfo');
-    const deletedIds = await PreferencesUtils.getDeletedTaskIds();
+    if (taskList.length === Const.TASK_NUM) {
+      return true;
+    }
     let exitsIndex: number[] = [];
     for (let task of taskList) {
       exitsIndex.push(task.taskId);
     }
     let missInfoList: TaskInfo[] = [];
     for (let index = 0; index < Const.TASK_NUM; index++) {
-      if (exitsIndex.includes(index) || deletedIds.includes(index)) {
+      if (exitsIndex.includes(index)) {
         continue;
       }
       missInfoList.push(defaultTaskInfoList[index]);

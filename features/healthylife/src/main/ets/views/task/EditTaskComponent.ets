@@ -104,6 +104,7 @@ export struct EditTaskComponent {
     // 1. close task if it's currently open (cancel reminders, cleanup day info)
     if (this.taskInfo.isOpen) {
       await TaskInfoApi.closeTask(this.homeStore.currentDate, this.taskInfo.taskId);
+      this.taskInfo.isOpen = false;
       if (this.taskBaseInfo.unit === '') {
         const taskInfo = await TaskInfoApi.queryByKey(this.taskInfo.taskId);
         if (taskInfo && taskInfo.reminderId !== -1) {
@@ -117,8 +118,10 @@ export struct EditTaskComponent {
       await DayTaskInfoApi.delete(dayTaskKey);
       await DayInfoApi.updateDayByTaskStatus(this.homeStore.currentDate);
     }
-    // 3. mark as deleted in preferences
-    await PreferencesUtils.addDeletedTaskId(this.taskInfo.taskId);
+    // 3. reset task to uncompleted state with zero progress
+    this.taskInfo.finValue = '';
+    this.taskInfo.isDone = false;
+    await TaskInfoApi.update(this.taskInfo.taskId, this.taskInfo);
     // 4. refresh home and go back
     await updateTaskList(this.homeStore);
     this.pageStack.clear(true);
