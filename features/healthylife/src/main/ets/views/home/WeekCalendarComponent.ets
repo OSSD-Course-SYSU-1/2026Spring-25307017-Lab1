@@ -17,14 +17,18 @@
 
 import { HomeStore, initCurrentDateInfo } from '../../viewmodel/HomeStore';
 import { CommonConstants as Const, convertStr2Date, DayInfo, formatSystemTime } from 'common';
+import { display } from '@kit.ArkUI';
 
 @Component
 export struct WeekCalendarComponent {
   @Consume @Watch('onDataChange') homeStore: HomeStore;
   @State showDateStr: string = '';
   @State currentWeekIndex: number = Const.WEEK_DAY_NUM;
+  @StorageLink('currentBreakpoint') currentBreakpoint: string = Const.BREAKPOINT_SM;
   showDate: Date = new Date();
   scroller: Scroller = new Scroller();
+  private leftLimit: number = Const.WEEK_LEFT_LIMIT;
+  private rightLimit: number = Const.WEEK_RIGHT_LIMIT;
 
   onDataChange() {
     this.showDate = convertStr2Date(this.homeStore.currentDate);
@@ -41,9 +45,9 @@ export struct WeekCalendarComponent {
    */
   private weekChange() {
     const center = this.scroller.currentOffset().xOffset;
-    if (center <= Const.WEEK_LEFT_LIMIT) {
+    if (center <= this.leftLimit) {
       this.animateToWeekAndRefresh(-Const.WEEK_DAY_NUM, 0);
-    } else if (center >= Const.WEEK_RIGHT_LIMIT) {
+    } else if (center >= this.rightLimit) {
       this.animateToWeekAndRefresh(Const.WEEK_DAY_NUM, Const.WEEK_DAY_NUM * 2);
     } else {
       this.getUIContext().animateTo({
@@ -68,6 +72,20 @@ export struct WeekCalendarComponent {
 
   aboutToAppear(): void {
     this.onDataChange();
+    this.computeScrollLimits();
+  }
+
+  private computeScrollLimits(): void {
+    try {
+      const displayInfo = display.getDefaultDisplaySync();
+      const density = displayInfo.densityPixels;
+      const widthVp = displayInfo.width / density;
+      const dayItemWidth = widthVp / Const.WEEK_DAY_NUM;
+      this.leftLimit = dayItemWidth * 3 * density;
+      this.rightLimit = dayItemWidth * 11 * density;
+    } catch (_err) {
+      // fallback to defaults
+    }
   }
 
   build() {

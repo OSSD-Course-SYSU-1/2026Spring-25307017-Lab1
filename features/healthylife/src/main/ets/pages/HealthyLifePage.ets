@@ -2,17 +2,7 @@
  *
  *  * Copyright (c) 2025 Huawei Device Co., Ltd.
  *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  * you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  *     http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
- *
+ *  * ...
  */
 
 import { HomeComponent } from '../views/HomeComponent';
@@ -22,6 +12,7 @@ import { CommonConstants as Const, convertDate2Str } from 'common';
 import DayInfoApi from 'common/src/main/ets/database/tables/DayInfoApi';
 import { AchievementStore, initAchievementStore } from '../viewmodel/AchievementStore';
 import { HomeStore } from '../viewmodel/HomeStore';
+import { display } from '@kit.ArkUI';
 import { common } from '@kit.AbilityKit';
 
 @Component
@@ -30,6 +21,7 @@ export struct HealthyLifePage {
   @Provide achievementStore: AchievementStore = new AchievementStore(0, 0, false);
   @Provide('pathStack') pageStack: NavPathStack = new NavPathStack();
   @Provide homeStore: HomeStore = new HomeStore([], -1, '', []);
+  @StorageLink('currentBreakpoint') currentBreakpoint: string = Const.BREAKPOINT_SM;
   private context = this.getUIContext()?.getHostContext() as common.UIAbilityContext;
   private windowClass = this.context.windowStage.getMainWindowSync();
 
@@ -43,8 +35,32 @@ export struct HealthyLifePage {
     } catch (error) {
       console.error(`an error occurred: ${error}`);
     }
+
+    this.updateBreakpoint();
+
+    this.windowClass.on('windowSizeChange', () => {
+      this.updateBreakpoint();
+    });
+
     await DayInfoApi.initDayInfo(convertDate2Str(new Date()));
     this.achievementStore = await initAchievementStore();
+  }
+
+  updateBreakpoint(): void {
+    try {
+      const rect = this.windowClass.getWindowProperties().windowRect;
+      const density = display.getDefaultDisplaySync().densityPixels;
+      const widthVp = rect.width / density;
+      if (widthVp >= 840) {
+        AppStorage.setOrCreate('currentBreakpoint', Const.BREAKPOINT_LG);
+      } else if (widthVp >= 600) {
+        AppStorage.setOrCreate('currentBreakpoint', Const.BREAKPOINT_MD);
+      } else {
+        AppStorage.setOrCreate('currentBreakpoint', Const.BREAKPOINT_SM);
+      }
+    } catch (err) {
+      AppStorage.setOrCreate('currentBreakpoint', Const.BREAKPOINT_SM);
+    }
   }
 
   build() {

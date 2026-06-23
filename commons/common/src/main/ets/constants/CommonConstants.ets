@@ -22,6 +22,12 @@ export enum PickerType {
 }
 
 export class CommonConstants {
+  // responsive breakpoint
+  static readonly BREAKPOINT_SM: string = 'sm';
+  static readonly BREAKPOINT_MD: string = 'md';
+  static readonly BREAKPOINT_LG: string = 'lg';
+  // max content width for tablets (vp)
+  static readonly TABLET_MAX_WIDTH: number = 960;
   // thousandth
   static readonly THOUSANDTH_15: string = '1.5%';
   static readonly THOUSANDTH_30: string = '3%';

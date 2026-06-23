@@ -50,3 +50,25 @@ v1.5.0
 v1.5.1
 
 修复删除任务后首页仍显示的 bug（closeTask 后未同步本地 isOpen 状态导致被 update 覆盖）
+
+v1.60~1.63
+
+新增历史记录页（"我的"→历史记录），按日期展示每天完成的任务名称及实时打卡时间
+头像支持长按从相册替换
+昵称支持长按编辑
+"个人资料"改为"个性签名"，支持长按编辑
+任务打卡时自动记录完成时刻（finishTime），持久化到 dayTaskInfo 表
+
+v1.7.0 — 平板适配
+
+module.json5 新增 tablet 设备类型
+新增 tablet/element/float.json 平板资源文件（字体、间距约 1.5x 缩放）
+HealthyLifePage 新增 BreakpointSystem 断点检测，窗口尺寸变化自动更新
+WeekCalendarComponent 滚动阈值改为根据屏幕宽度动态计算
+HomeTopComponent 背景改为 Image + ImageFit.Cover，平板固定高度 300vp
+MineComponent 移除嵌套 Navigation，行宽改为 100% 居中布局
+各页面内容超长时显示滚动条可上下滑动
+
+v1.80-自由流转
+
+对于同一账号，手机端和平板端共享任务进度，历史记录和成就

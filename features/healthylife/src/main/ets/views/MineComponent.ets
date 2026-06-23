@@ -37,7 +37,7 @@ export struct MineComponent {
   }
 
   build() {
-    Navigation() {
+    Column() {
       Column() {
         UserInfoComponent()
         Row({ space: $r('app.float.default_16') }) {
@@ -80,7 +80,7 @@ export struct MineComponent {
               .fontColor($r('sys.color.font_tertiary'))
           }
         }
-        .width(Const.THOUSANDTH_940)
+        .width(Const.THOUSANDTH_1000)
         .height(Const.THOUSANDTH_100)
         .borderRadius({
           topLeft: $r('app.float.default_16'),
@@ -105,7 +105,7 @@ export struct MineComponent {
 
         Divider()
           .color($r('app.float.default_1'))
-          .width(Const.THOUSANDTH_880)
+          .width(Const.THOUSANDTH_1000)
         Row({ space: $r('app.float.default_16') }) {
           Image($r('app.media.arrow_up_circle'))
             .width($r('app.float.default_24'))
@@ -120,7 +120,7 @@ export struct MineComponent {
             .fontWeight(FontWeight.Normal)
             .fontSize($r('app.float.default_24'))
         }
-        .width(Const.THOUSANDTH_940)
+        .width(Const.THOUSANDTH_1000)
         .height(Const.THOUSANDTH_100)
         .borderRadius({
           bottomLeft: $r('app.float.default_16'),
@@ -149,7 +149,7 @@ export struct MineComponent {
             .fontWeight(FontWeight.Normal)
             .fontSize($r('app.float.default_24'))
         }
-        .width(Const.THOUSANDTH_940)
+        .width(Const.THOUSANDTH_1000)
         .height(Const.THOUSANDTH_100)
         .borderRadius($r('app.float.default_16'))
         .padding({
@@ -179,7 +179,7 @@ export struct MineComponent {
             .fontWeight(FontWeight.Normal)
             .fontSize($r('app.float.default_24'))
         }
-        .width(Const.THOUSANDTH_940)
+        .width(Const.THOUSANDTH_1000)
         .height(Const.THOUSANDTH_100)
         .borderRadius($r('app.float.default_16'))
         .padding({
@@ -194,10 +194,11 @@ export struct MineComponent {
           this.pageStack.pushPathByName('AchievementComponent', '');
         })
       }
-      .width(Const.THOUSANDTH_1000)
-      .height(Const.THOUSANDTH_1000)
+      .width(Const.THOUSANDTH_940)
+      .alignItems(HorizontalAlign.Center)
     }
-    .title($r('app.string.tab_mine'))
+    .width(Const.THOUSANDTH_1000)
+    .height(Const.THOUSANDTH_1000)
     .backgroundColor($r('sys.color.background_secondary'))
   }
 }

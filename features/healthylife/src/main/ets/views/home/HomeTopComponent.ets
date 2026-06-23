@@ -2,17 +2,7 @@
  *
  *  * Copyright (c) 2025 Huawei Device Co., Ltd.
  *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  * you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  *     http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
- *
+ *  * ...
  */
 
 import { HomeStore } from '../../viewmodel/HomeStore';
@@ -27,6 +17,7 @@ export struct HomeTopComponent {
   @Consume @Watch('onDataChange') homeStore: HomeStore;
   @State dayInfo: DayInfo = new DayInfo('', 0, 0);
   @State customBgUri: string = '';
+  @StorageLink('currentBreakpoint') currentBreakpoint: string = Const.BREAKPOINT_SM;
 
   onDataChange() {
     this.dayInfo = this.homeStore.weekList[this.homeStore.selectedDay];
@@ -45,9 +36,8 @@ export struct HomeTopComponent {
         maxSelectNumber: 1
       });
       if (result.photoUris.length > 0) {
-        const uri = result.photoUris[0];
-        this.customBgUri = uri;
-        await PreferencesUtils.setHomeBgUri(uri);
+        this.customBgUri = result.photoUris[0];
+        await PreferencesUtils.setHomeBgUri(this.customBgUri);
       }
     } catch (err) {
       const error = err as BusinessError;
@@ -56,53 +46,50 @@ export struct HomeTopComponent {
   }
 
   build() {
-    Column() {
-      Text($r('app.string.target_progress'))
-        .fontFamily(Const.HARMONY_HEI_TI_MEDIUM)
-        .fontWeight(FontWeight.Regular)
-        .fontColor($r(`sys.color.font_secondary`))
-        .fontSize($r('app.float.default_16'))
+    Stack() {
+      Image(this.customBgUri || $r('app.media.ic_home_bg'))
         .width(Const.THOUSANDTH_1000)
-        .padding({
-          left: $r('app.float.default_24')
-        })
+        .height(Const.THOUSANDTH_1000)
+        .objectFit(ImageFit.Cover)
+        .draggable(false)
 
-      Row() {
-        Text(`${this.dayInfo.calculatePercentage()}`)
-          .fontFamily(Const.HARMONY_HEI_TI_BOLD)
-          .fontWeight(FontWeight.Bold)
-          .fontColor($r(`sys.color.font_primary`))
-          .fontSize($r('app.float.default_72'))
-
-        Text(Const.PERCENT)
+      Column() {
+        Text($r('app.string.target_progress'))
           .fontFamily(Const.HARMONY_HEI_TI_MEDIUM)
           .fontWeight(FontWeight.Regular)
-          .fontColor($r(`sys.color.font_primary`))
-          .fontSize($r('app.float.default_40'))
+          .fontColor($r(`sys.color.font_secondary`))
+          .fontSize($r('app.float.default_16'))
           .width(Const.THOUSANDTH_1000)
-          .margin({
-            top: $r('app.float.default_12'),
-            left: $r('app.float.default_8')
-          })
+          .padding({ left: $r('app.float.default_24') })
+
+        Row() {
+          Text(`${this.dayInfo.calculatePercentage()}`)
+            .fontFamily(Const.HARMONY_HEI_TI_BOLD)
+            .fontWeight(FontWeight.Bold)
+            .fontColor($r(`sys.color.font_primary`))
+            .fontSize($r('app.float.default_72'))
+
+          Text(Const.PERCENT)
+            .fontFamily(Const.HARMONY_HEI_TI_MEDIUM)
+            .fontWeight(FontWeight.Regular)
+            .fontColor($r(`sys.color.font_primary`))
+            .fontSize($r('app.float.default_40'))
+            .width(Const.THOUSANDTH_1000)
+            .margin({
+              top: $r('app.float.default_12'),
+              left: $r('app.float.default_8')
+            })
+        }
+        .width(Const.THOUSANDTH_1000)
+        .padding({ left: $r('app.float.default_24') })
+
+        WeekCalendarComponent()
       }
       .width(Const.THOUSANDTH_1000)
-      .padding({
-        left: $r('app.float.default_24')
-      })
-
-      WeekCalendarComponent()
+      .height(Const.THOUSANDTH_1000)
+      .justifyContent(FlexAlign.End)
     }
-    .height(Const.THOUSANDTH_500)
-    .backgroundImage(this.customBgUri || $r('app.media.ic_home_bg'))
-    .backgroundImagePosition({
-      x: $r('app.float.default_0'),
-      y: $r('app.float.default_0')
-    })
-    .backgroundImageSize({
-      width: Const.THOUSANDTH_1000,
-      height: Const.THOUSANDTH_900
-    })
-    .justifyContent(FlexAlign.End)
+    .height(this.currentBreakpoint === Const.BREAKPOINT_SM ? Const.THOUSANDTH_500 : 300)
     .gesture(
       LongPressGesture({ repeat: false, duration: 800 })
         .onAction(async () => {

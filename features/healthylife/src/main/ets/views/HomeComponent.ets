@@ -65,6 +65,8 @@ export struct HomeComponent {
 
               HomeTopComponent()
 
+              Blank().height($r('app.float.default_16'))
+
               Text($r('app.string.task_list'))
                 .fontFamily(Const.HARMONY_HEI_TI_MEDIUM)
                 .fontWeight(FontWeight.Bold)
@@ -72,8 +74,8 @@ export struct HomeComponent {
                 .fontSize($r('app.float.default_20'))
                 .width(Const.THOUSANDTH_1000)
                 .padding({
-                  top: $r('app.float.default_24'),
-                  bottom: $r('app.float.default_8'),
+                  top: $r('app.float.default_16'),
+                  bottom: $r('app.float.default_12'),
                   left: $r('app.float.default_16')
                 })
 
@@ -83,7 +85,8 @@ export struct HomeComponent {
           .width(Const.THOUSANDTH_1000)
           .height(Const.THOUSANDTH_1000)
           .align(Alignment.Top)
-          .scrollBar(BarState.Off)
+          .scrollBar(BarState.Auto)
+          .scrollable(ScrollDirection.Vertical)
           .edgeEffect(EdgeEffect.Spring, {
             alwaysEnabled: false,
             effectEdge: EffectEdge.END
