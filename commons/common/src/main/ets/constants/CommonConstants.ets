@@ -108,6 +108,10 @@ export class CommonConstants {
   static readonly PICKER_RANGE_APPLE: string[] = [
     '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'
   ];
+  static readonly PICKER_RANGE_TIMES: string[] = [
+    '1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
+    '11', '12', '13', '14', '15', '16', '17', '18', '19', '20'
+  ];
   // achievement info
   static readonly ACHIEVEMENT_STORE: string = 'achievementStore';
   static readonly MAX_CONSECUTIVE_DAYS: string = 'maxConsecutiveDays';
