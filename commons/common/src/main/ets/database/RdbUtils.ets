@@ -104,6 +104,15 @@ export class RdbUtils {
   /*
    * The method of creating an RDBStore Instance.
    */
+  static async migrateTaskInfoTable(): Promise<void> {
+    try {
+      await RdbUtils.executeSql('ALTER TABLE taskInfo ADD COLUMN customName TEXT');
+      hilog.info(0x0000, TAG, 'Migration: added customName column to taskInfo');
+    } catch (_err) {
+      // column already exists, ignore
+    }
+  }
+
   static async closeRdb(): Promise<void> {
     if (RdbUtils.rdbStore) {
       RdbUtils.rdbStore.close().then(() => {

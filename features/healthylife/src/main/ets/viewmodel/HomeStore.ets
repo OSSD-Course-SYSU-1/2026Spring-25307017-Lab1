@@ -16,7 +16,7 @@
  */
 
 import {
-  CommonConstants as Const, convertDate2Str, DayInfo, DayTaskInfo
+  CommonConstants as Const, convertDate2Str, DayInfo, DayTaskInfo, taskBaseInfoList
 } from 'common';
 import DayInfoApi from 'common/src/main/ets/database/tables/DayInfoApi';
 import TaskInfoApi from 'common/src/main/ets/database/tables/TaskInfoApi';
@@ -32,6 +32,7 @@ export class HomeStore {
   public selectedDay: number;
   public currentDate: string;
   public taskList: DayTaskInfo[];
+  public taskNameMap: Map<number, string> = new Map();
 
   constructor(weekList: DayInfo[], selectedDay: number, currentDate: string, taskList: DayTaskInfo[]) {
     this.weekList = weekList;
@@ -43,6 +44,14 @@ export class HomeStore {
   public checkCurrentDay(): boolean {
     return convertDate2Str(new Date()) === this.currentDate;
   }
+
+  public getTaskDisplayName(taskId: number): ResourceStr {
+    const customName = this.taskNameMap.get(taskId);
+    if (customName && customName.trim().length > 0) {
+      return customName;
+    }
+    return taskBaseInfoList[taskId].name;
+  }
 }
 
 /*
@@ -50,6 +59,14 @@ export class HomeStore {
  * @param { Date } date Date of the day.
  * @returns { Promise<HomeStore> } The global storage information.
  */
+async function refreshTaskNameMap(homeStore: HomeStore): Promise<void> {
+  const taskInfos = await TaskInfoApi.queryAllTaskInfo();
+  homeStore.taskNameMap.clear();
+  for (let info of taskInfos) {
+    homeStore.taskNameMap.set(info.taskId, info.customName || '');
+  }
+}
+
 export async function initCurrentDateInfo(date: Date): Promise<HomeStore> {
   let dayOfWeek = date.getDay();
   let selectedDay = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
@@ -74,7 +91,9 @@ export async function initCurrentDateInfo(date: Date): Promise<HomeStore> {
       taskList.push(openedTask.convert2DefaultDayTask(dateStr))
     }
   }
-  return new HomeStore(weekList, selectedDay + Const.WEEK_DAY_NUM, dateStr, taskList);
+  const result = new HomeStore(weekList, selectedDay + Const.WEEK_DAY_NUM, dateStr, taskList);
+  await refreshTaskNameMap(result);
+  return result;
 }
 
 /*
@@ -100,6 +119,7 @@ export async function updateTaskList(homeStore: HomeStore): Promise<void> {
     }
   }
   homeStore.taskList = taskList;
+  await refreshTaskNameMap(homeStore);
 }
 
 /*

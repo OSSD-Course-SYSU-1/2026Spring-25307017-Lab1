@@ -27,6 +27,7 @@ export class TaskInfoDialogParams {
   homeStore: HomeStore;
   achievementStore: AchievementStore;
   uIContext: UIContext;
+  taskDisplayName: ResourceStr = '';
 
   constructor(dayTaskInfo: DayTaskInfo, homeStore: HomeStore, achievementStore: AchievementStore,
     uIContext: UIContext) {

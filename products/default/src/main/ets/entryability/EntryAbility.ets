@@ -40,6 +40,7 @@ export default class EntryAbility extends UIAbility {
         RdbUtils.createTable(tableName);
       }
     });
+    await RdbUtils.migrateTaskInfoTable();
     await TaskInfoApi.checkDefaultTask();
     // Init preferences and get store
     await PreferencesUtils.getPreferencesFromStorage(this.context);

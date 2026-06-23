@@ -125,6 +125,10 @@
       "value": "Edit task"
     },
     {
+      "name": "task_name",
+      "value": "Name"
+    },
+    {
       "name": "task_opened",
       "value": "Opened"
     },

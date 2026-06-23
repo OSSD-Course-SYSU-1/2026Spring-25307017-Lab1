@@ -32,7 +32,7 @@ export function openTaskClockCustomDialog(uIContext: UIContext, params: TaskInfo
 @Builder
 export function taskClockDialogBuilder(params: TaskInfoDialogParams) {
   Column() {
-    Text(taskBaseInfoList[params.dayTaskInfo.taskId].name)
+    Text(params.taskDisplayName || taskBaseInfoList[params.dayTaskInfo.taskId].name)
       .fontFamily(Const.HARMONY_HEI_TI_BOLD)
       .fontWeight(FontWeight.Bold)
       .fontColor($r(`sys.color.font_on_primary`))

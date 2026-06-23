@@ -32,9 +32,9 @@ export class TargetSettingDialogParams {
     this.taskBaseInfo = taskBaseInfo;
     this.selectedValue = taskInfo.targetValue;
     if (taskBaseInfo.pickerType === PickerType.TIME) {
-      const limitArr = taskBaseInfo.limit.split('-');
-      this.startDate = convertTime2Date(limitArr[0]);
-      this.endDate = convertTime2Date(limitArr[1]);
+      const now = new Date();
+      this.startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0);
+      this.endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59);
     }
   }
 }

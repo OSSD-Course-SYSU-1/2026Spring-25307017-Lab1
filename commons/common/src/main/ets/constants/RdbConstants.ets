@@ -52,7 +52,8 @@ export class RdbConstants {
     new ColumnInfo('alertStartTime', 'text', -1, true, false, false),
     new ColumnInfo('alertEndTime', 'text', -1, true, false, false),
     new ColumnInfo('alertFrequency', 'text', -1, true, false, false),
-    new ColumnInfo('reminderId', 'integer', -1, true, false, false)
+    new ColumnInfo('reminderId', 'integer', -1, true, false, false),
+    new ColumnInfo('customName', 'text', -1, true, false, false)
   ];
   // column information for database tables of day and task info
   static readonly COLUMNS_OF_DAY_TASK: ColumnInfo[] = [

@@ -28,9 +28,10 @@ export class TaskInfo {
   alertEndTime: string;
   alertFrequency: string;
   reminderId: number;
+  customName: string;
 
   constructor(taskId: number, isOpen: boolean, targetValue: string, finValue: string, isDone: boolean, isAlert: boolean,
-    alertStartTime: string, alertEndTime: string, alertFrequency: string, reminderId: number) {
+    alertStartTime: string, alertEndTime: string, alertFrequency: string, reminderId: number, customName: string = '') {
     this.taskId = taskId;
     this.isOpen = isOpen;
     this.targetValue = targetValue;
@@ -41,6 +42,7 @@ export class TaskInfo {
     this.alertEndTime = alertEndTime;
     this.alertFrequency = alertFrequency;
     this.reminderId = reminderId
+    this.customName = customName
   }
 
   toString(): string {
@@ -54,7 +56,8 @@ export class TaskInfo {
       `alertStartTime: ${this.alertStartTime}, ` +
       `alertEndTime: ${this.alertEndTime}, ` +
       `alertFrequency: ${this.alertFrequency}, ` +
-      `reminderId: ${this.reminderId}` +
+      `reminderId: ${this.reminderId}, ` +
+      `customName: ${this.customName}` +
       `]`;
   }
 
@@ -69,7 +72,8 @@ export class TaskInfo {
       this.alertStartTime,
       this.alertEndTime,
       this.alertFrequency,
-      this.reminderId
+      this.reminderId,
+      this.customName
     );
   }
 
@@ -84,6 +88,7 @@ export class TaskInfo {
       && this.alertEndTime === otherTask.alertEndTime
       && this.alertFrequency === otherTask.alertFrequency
       && this.reminderId === otherTask.reminderId
+      && this.customName === otherTask.customName
   }
 
   convert2DayTask(date: string): DayTaskInfo {

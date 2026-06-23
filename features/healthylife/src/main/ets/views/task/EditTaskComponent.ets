@@ -58,8 +58,14 @@ export struct EditTaskComponent {
   @Provide taskInfo: TaskInfo = new TaskInfo(0, false, '', '', false, false, '', '', '', -1);
   @Provide taskBaseInfo: TaskBaseInfo = taskBaseInfoList[this.taskInfo.taskId];
   originalInfo: TaskInfo = this.taskInfo;
+  @State customTaskName: string = '';
+
+  aboutToAppear(): void {
+    this.customTaskName = this.taskInfo.customName || '';
+  }
 
   async finishTaskEdit() {
+    this.taskInfo.customName = this.customTaskName.trim();
     if (this.originalInfo.isTaskEqual(this.taskInfo)) {
       this.pageStack.clear(true);
       return;
@@ -124,7 +130,41 @@ export struct EditTaskComponent {
         space: $r('app.float.default_12')
       }) {
         Row() {
-          Text(this.taskBaseInfo.name)
+          Text($r('app.string.task_name'))
+            .fontWeight(FontWeight.Medium)
+            .fontSize($r('app.float.default_18'))
+
+          TextInput({
+            text: this.customTaskName,
+            placeholder: this.taskBaseInfo.name
+          })
+            .fontSize($r('app.float.default_16'))
+            .fontColor($r('sys.color.font_primary'))
+            .backgroundColor($r('sys.color.background_tertiary'))
+            .borderRadius($r('app.float.default_8'))
+            .padding({
+              left: $r('app.float.default_8'),
+              right: $r('app.float.default_8')
+            })
+            .textAlign(TextAlign.End)
+            .layoutWeight(1)
+            .maxLength(20)
+            .onChange((value: string) => {
+              this.customTaskName = value;
+            })
+        }
+        .width(Const.THOUSANDTH_940)
+        .justifyContent(FlexAlign.SpaceBetween)
+        .backgroundColor($r('sys.color.background_primary'))
+        .height($r('app.float.default_56'))
+        .borderRadius($r('app.float.default_16'))
+        .padding({
+          left: $r('app.float.default_12'),
+          right: $r('app.float.default_12')
+        })
+
+        Row() {
+          Text(this.customTaskName || this.taskBaseInfo.name)
             .fontWeight(FontWeight.Medium)
             .fontSize($r('app.float.default_18'))
 

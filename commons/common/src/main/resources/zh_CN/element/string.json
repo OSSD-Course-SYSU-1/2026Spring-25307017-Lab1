@@ -125,6 +125,10 @@
       "value": "编辑任务"
     },
     {
+      "name": "task_name",
+      "value": "名称"
+    },
+    {
       "name": "task_opened",
       "value": "已开启"
     },

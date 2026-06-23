@@ -74,7 +74,7 @@ export struct TaskListComponent {
           right: $r('app.float.default_8')
         })
 
-      Text(taskBaseInfoList[item.taskId].name)
+      Text(this.homeStore.getTaskDisplayName(item.taskId))
         .fontFamily(Const.HARMONY_HEI_TI_MEDIUM)
         .fontWeight(FontWeight.Regular)
         .fontColor($r(`sys.color.font_primary`))
@@ -98,6 +98,7 @@ export struct TaskListComponent {
     .onClick(() => {
       if (this.homeStore.checkCurrentDay()) {
         let params = new TaskInfoDialogParams(item, this.homeStore, this.achievementStore, this.getUIContext());
+        params.taskDisplayName = this.homeStore.getTaskDisplayName(item.taskId);
         openTaskClockCustomDialog(this.getUIContext(), params);
       }
     })
