@@ -100,6 +100,15 @@ export class PreferencesUtils {
     }
   }
 
+  static async getHomeBgUri(): Promise<string> {
+    const value = await PreferencesUtils.getPreference(Const.HOME_BG_URI);
+    return (value && value !== 'default') ? value : '';
+  }
+
+  static async setHomeBgUri(uri: string): Promise<void> {
+    await PreferencesUtils.putPreference(Const.HOME_BG_URI, uri);
+  }
+
   static async getPreference(key: string): Promise<string> {
     let value: string = ''
     if (!PreferencesUtils.storePreferences) {

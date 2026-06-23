@@ -17,19 +17,42 @@
 
 import { HomeStore } from '../../viewmodel/HomeStore';
 import { CommonConstants as Const, DayInfo } from 'common';
+import { PreferencesUtils } from 'common/src/main/ets/utils/PreferencesUtils';
 import { WeekCalendarComponent } from './WeekCalendarComponent';
+import { photoAccessHelper } from '@kit.MediaLibraryKit';
+import { BusinessError } from '@kit.BasicServicesKit';
 
 @Component
 export struct HomeTopComponent {
   @Consume @Watch('onDataChange') homeStore: HomeStore;
   @State dayInfo: DayInfo = new DayInfo('', 0, 0);
+  @State customBgUri: string = '';
 
   onDataChange() {
     this.dayInfo = this.homeStore.weekList[this.homeStore.selectedDay];
   }
 
-  aboutToAppear(): void {
+  async aboutToAppear(): Promise<void> {
     this.onDataChange();
+    this.customBgUri = await PreferencesUtils.getHomeBgUri();
+  }
+
+  async selectPhoto() {
+    try {
+      const photoPicker = new photoAccessHelper.PhotoViewPicker();
+      const result = await photoPicker.select({
+        MIMEType: photoAccessHelper.PhotoViewMIMETypes.IMAGE_TYPE,
+        maxSelectNumber: 1
+      });
+      if (result.photoUris.length > 0) {
+        const uri = result.photoUris[0];
+        this.customBgUri = uri;
+        await PreferencesUtils.setHomeBgUri(uri);
+      }
+    } catch (err) {
+      const error = err as BusinessError;
+      console.error(`Photo picker error: ${error.code}, ${error.message}`);
+    }
   }
 
   build() {
@@ -70,7 +93,7 @@ export struct HomeTopComponent {
       WeekCalendarComponent()
     }
     .height(Const.THOUSANDTH_500)
-    .backgroundImage($r('app.media.ic_home_bg'))
+    .backgroundImage(this.customBgUri || $r('app.media.ic_home_bg'))
     .backgroundImagePosition({
       x: $r('app.float.default_0'),
       y: $r('app.float.default_0')
@@ -80,5 +103,11 @@ export struct HomeTopComponent {
       height: Const.THOUSANDTH_900
     })
     .justifyContent(FlexAlign.End)
+    .gesture(
+      LongPressGesture({ repeat: false, duration: 800 })
+        .onAction(async () => {
+          await this.selectPhoto();
+        })
+    )
   }
 }
